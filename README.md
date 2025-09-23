@@ -1,4 +1,4 @@
-# SebaTech API 🚀
+# SebasTech API 🚀
 
 Una API REST desarrollada con Spring Boot para la gestión de una tienda de productos de PC. Este proyecto proporciona endpoints para administrar usuarios, roles, categorías y marcas de productos.
 
