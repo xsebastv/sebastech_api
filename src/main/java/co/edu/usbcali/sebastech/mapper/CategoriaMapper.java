@@ -1,6 +1,5 @@
 package co.edu.usbcali.sebastech.mapper;
 
-import ch.qos.logback.classic.spi.LoggingEventVO;
 import co.edu.usbcali.sebastech.domain.Categoria;
 import co.edu.usbcali.sebastech.dto.CategoriaRequestDTO;
 import co.edu.usbcali.sebastech.dto.CategoriaResponseDTO;
