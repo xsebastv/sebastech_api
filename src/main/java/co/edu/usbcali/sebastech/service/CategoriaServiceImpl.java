@@ -3,6 +3,7 @@ package co.edu.usbcali.sebastech.service;
 import co.edu.usbcali.sebastech.domain.Categoria;
 import co.edu.usbcali.sebastech.dto.CategoriaRequestDTO;
 import co.edu.usbcali.sebastech.dto.CategoriaResponseDTO;
+import co.edu.usbcali.sebastech.dto.CategoriaPatchDTO;
 import co.edu.usbcali.sebastech.exception.BadRequestException;
 import co.edu.usbcali.sebastech.exception.NotFoundException;
 import co.edu.usbcali.sebastech.mapper.CategoriaMapper;
@@ -74,6 +75,26 @@ public class CategoriaServiceImpl implements CategoriaService {
         if (categoriaRequestDTO.getDescripcion() != null) {
             categoria.setDescripcion(categoriaRequestDTO.getDescripcion());
         }
+        categoria = categoriaRepository.save(categoria);
+        return CategoriaMapper.entityToDto(categoria);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CategoriaResponseDTO patchCategoria(Integer id, CategoriaPatchDTO patchDTO) throws Exception {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
+        
+        if (patchDTO == null) throw new BadRequestException("Datos inválidos");
+        
+        // Solo actualizar campos que no sean null
+        if (patchDTO.getNombre() != null && !patchDTO.getNombre().isBlank()) {
+            categoria.setNombre(patchDTO.getNombre());
+        }
+        if (patchDTO.getDescripcion() != null) {
+            categoria.setDescripcion(patchDTO.getDescripcion());
+        }
+        
         categoria = categoriaRepository.save(categoria);
         return CategoriaMapper.entityToDto(categoria);
     }

@@ -4,6 +4,7 @@ import co.edu.usbcali.sebastech.domain.Rol;
 import co.edu.usbcali.sebastech.domain.Usuario;
 import co.edu.usbcali.sebastech.dto.UsuarioRequestDTO;
 import co.edu.usbcali.sebastech.dto.UsuarioResponseDTO;
+import co.edu.usbcali.sebastech.dto.UsuarioPatchDTO;
 import co.edu.usbcali.sebastech.exception.BadRequestException;
 import co.edu.usbcali.sebastech.exception.ConflictException;
 import co.edu.usbcali.sebastech.exception.NotFoundException;
@@ -107,6 +108,49 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (request.getRoleId() != null) {
             Rol rol = rolRepository.findById(request.getRoleId())
             .orElseThrow(() -> new NotFoundException("Rol no encontrado"));
+            usuario.setRol(rol);
+        }
+
+        usuario = usuarioRepository.save(usuario);
+        return UsuarioMapper.entityToDto(usuario);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public UsuarioResponseDTO patchUsuario(Integer id, UsuarioPatchDTO patchDTO) throws Exception {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+        
+        if (patchDTO == null) throw new BadRequestException("Datos inválidos");
+
+        // Solo actualiza los campos que no sean null
+        if ((patchDTO.getFirstName() != null && !patchDTO.getFirstName().isBlank()) || 
+            (patchDTO.getLastName() != null && !patchDTO.getLastName().isBlank())) {
+            String fn = patchDTO.getFirstName() == null ? "" : patchDTO.getFirstName().trim();
+            String ln = patchDTO.getLastName() == null ? "" : patchDTO.getLastName().trim();
+            String nombre = (fn + " " + ln).trim();
+            if (!nombre.isBlank()) usuario.setNombre(nombre);
+        }
+        
+        if (patchDTO.getEmail() != null && !patchDTO.getEmail().isBlank()) {
+            if (!patchDTO.getEmail().equalsIgnoreCase(usuario.getEmail()) && 
+                usuarioRepository.existsByEmail(patchDTO.getEmail())) {
+                throw new ConflictException("Ya existe un usuario con ese email");
+            }
+            usuario.setEmail(patchDTO.getEmail());
+        }
+        
+        if (patchDTO.getPassword() != null && !patchDTO.getPassword().isBlank()) {
+            usuario.setContrasena(patchDTO.getPassword());
+        }
+        
+        if (patchDTO.getPhone() != null) {
+            usuario.setTelefono(patchDTO.getPhone());
+        }
+
+        if (patchDTO.getRoleId() != null) {
+            Rol rol = rolRepository.findById(patchDTO.getRoleId())
+                    .orElseThrow(() -> new NotFoundException("Rol no encontrado"));
             usuario.setRol(rol);
         }
 

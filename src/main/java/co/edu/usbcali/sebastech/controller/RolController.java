@@ -2,6 +2,7 @@ package co.edu.usbcali.sebastech.controller;
 
 import co.edu.usbcali.sebastech.dto.RolRequestDTO;
 import co.edu.usbcali.sebastech.dto.RolResponseDTO;
+import co.edu.usbcali.sebastech.dto.RolPatchDTO;
 import co.edu.usbcali.sebastech.service.RolService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,12 @@ public class RolController {
     public ResponseEntity<RolResponseDTO> updateRol(@PathVariable Integer id,
                                                     @RequestBody RolRequestDTO rolRequestDTO) throws Exception {
         return ResponseEntity.ok(rolService.updateRol(id, rolRequestDTO));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<RolResponseDTO> patchRol(@PathVariable Integer id,
+                                                   @RequestBody RolPatchDTO patchDTO) throws Exception {
+        return ResponseEntity.ok(rolService.patchRol(id, patchDTO));
     }
 
     @DeleteMapping("/{id}")

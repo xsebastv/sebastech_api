@@ -1,6 +1,7 @@
 package co.edu.usbcali.sebastech.service;
 import co.edu.usbcali.sebastech.dto.CategoriaRequestDTO;
 import co.edu.usbcali.sebastech.dto.CategoriaResponseDTO;
+import co.edu.usbcali.sebastech.dto.CategoriaPatchDTO;
 
 import java.util.List;
 
@@ -10,5 +11,6 @@ public interface CategoriaService {
     CategoriaResponseDTO saveCategoria(CategoriaRequestDTO categoriaRequestDTO) throws  Exception;
     CategoriaResponseDTO findById(Integer id) throws Exception;
     CategoriaResponseDTO updateCategoria(Integer id, CategoriaRequestDTO categoriaRequestDTO) throws Exception;
+    CategoriaResponseDTO patchCategoria(Integer id, CategoriaPatchDTO patchDTO) throws Exception;
     void deleteCategoria(Integer id) throws Exception;
 }

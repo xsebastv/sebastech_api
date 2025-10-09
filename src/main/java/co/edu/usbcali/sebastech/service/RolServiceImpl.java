@@ -3,6 +3,7 @@ package co.edu.usbcali.sebastech.service;
 import co.edu.usbcali.sebastech.domain.Rol;
 import co.edu.usbcali.sebastech.dto.RolRequestDTO;
 import co.edu.usbcali.sebastech.dto.RolResponseDTO;
+import co.edu.usbcali.sebastech.dto.RolPatchDTO;
 import co.edu.usbcali.sebastech.exception.BadRequestException;
 import co.edu.usbcali.sebastech.exception.NotFoundException;
 import co.edu.usbcali.sebastech.mapper.RolMapper;
@@ -74,6 +75,26 @@ public class RolServiceImpl implements RolService {
         if (rolRequestDTO.getDescripcion() != null) {
             rol.setDescripcion(rolRequestDTO.getDescripcion());
         }
+        rol = rolRepository.save(rol);
+        return RolMapper.entityToDto(rol);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public RolResponseDTO patchRol(Integer id, RolPatchDTO patchDTO) throws Exception {
+        Rol rol = rolRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Rol no encontrado"));
+        
+        if (patchDTO == null) throw new BadRequestException("Datos inválidos");
+        
+        // Solo actualiza los campos que no sean null
+        if (patchDTO.getNombre() != null && !patchDTO.getNombre().isBlank()) {
+            rol.setNombre(patchDTO.getNombre());
+        }
+        if (patchDTO.getDescripcion() != null) {
+            rol.setDescripcion(patchDTO.getDescripcion());
+        }
+        
         rol = rolRepository.save(rol);
         return RolMapper.entityToDto(rol);
     }

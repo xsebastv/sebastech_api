@@ -2,6 +2,7 @@ package co.edu.usbcali.sebastech.service;
 
 import co.edu.usbcali.sebastech.dto.UsuarioRequestDTO;
 import co.edu.usbcali.sebastech.dto.UsuarioResponseDTO;
+import co.edu.usbcali.sebastech.dto.UsuarioPatchDTO;
 
 import java.util.List;
 
@@ -11,5 +12,6 @@ public interface UsuarioService {
     UsuarioResponseDTO saveUsuario(UsuarioRequestDTO request) throws Exception;
     UsuarioResponseDTO findById(Integer id) throws Exception;
     UsuarioResponseDTO updateUsuario(Integer id, UsuarioRequestDTO request) throws Exception;
+    UsuarioResponseDTO patchUsuario(Integer id, UsuarioPatchDTO patchDTO) throws Exception;
     void deleteUsuario(Integer id) throws Exception;
 }
