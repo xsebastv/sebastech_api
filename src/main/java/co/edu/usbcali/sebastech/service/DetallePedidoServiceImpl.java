@@ -5,6 +5,7 @@ import co.edu.usbcali.sebastech.domain.Pedido;
 import co.edu.usbcali.sebastech.domain.Producto;
 import co.edu.usbcali.sebastech.dto.DetallePedidoRequestDTO;
 import co.edu.usbcali.sebastech.dto.DetallePedidoResponseDTO;
+import co.edu.usbcali.sebastech.dto.DetallePedidoPatchDTO;
 import co.edu.usbcali.sebastech.exception.BadRequestException;
 import co.edu.usbcali.sebastech.exception.NotFoundException;
 import co.edu.usbcali.sebastech.mapper.DetallePedidoMapper;
@@ -39,6 +40,36 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
         Pedido pedido = pedidoRepository.findById(request.getPedidoId()).orElseThrow(() -> new NotFoundException("Pedido no encontrado"));
         Producto producto = productoRepository.findById(request.getProductoId()).orElseThrow(() -> new NotFoundException("Producto no encontrado"));
         DetallePedido detalle = DetallePedidoMapper.requestDtoToEntity(request, pedido, producto);
+        detalle = detallePedidoRepository.save(detalle);
+        return DetallePedidoMapper.entityToDto(detalle);
+    }
+
+    @Override
+    @Transactional
+    public DetallePedidoResponseDTO patchDetallePedido(Integer id, DetallePedidoPatchDTO patchDTO) throws Exception {
+        DetallePedido detalle = detallePedidoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Detalle de pedido no encontrado"));
+        
+        if (patchDTO == null) throw new BadRequestException("Datos inválidos");
+        
+        // Solo actualizar campos que no sean null
+        if (patchDTO.getCantidad() != null) {
+            detalle.setCantidad(patchDTO.getCantidad());
+        }
+        if (patchDTO.getPrecioUnitario() != null) {
+            detalle.setPrecioUnitario(patchDTO.getPrecioUnitario());
+        }
+        if (patchDTO.getPedidoId() != null) {
+            Pedido pedido = pedidoRepository.findById(patchDTO.getPedidoId())
+                    .orElseThrow(() -> new NotFoundException("Pedido no encontrado"));
+            detalle.setPedido(pedido);
+        }
+        if (patchDTO.getProductoId() != null) {
+            Producto producto = productoRepository.findById(patchDTO.getProductoId())
+                    .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
+            detalle.setProducto(producto);
+        }
+        
         detalle = detallePedidoRepository.save(detalle);
         return DetallePedidoMapper.entityToDto(detalle);
     }

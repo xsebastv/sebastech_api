@@ -2,6 +2,7 @@ package co.edu.usbcali.sebastech.controller;
 
 import co.edu.usbcali.sebastech.dto.MarcaRequestDTO;
 import co.edu.usbcali.sebastech.dto.MarcaResponseDTO;
+import co.edu.usbcali.sebastech.dto.MarcaPatchDTO;
 import co.edu.usbcali.sebastech.service.MarcaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,12 @@ public class MarcaController {
     public ResponseEntity<MarcaResponseDTO> updateMarca(@PathVariable Integer id,
                                                         @RequestBody MarcaRequestDTO request) throws Exception {
         return ResponseEntity.ok(marcaService.updateMarca(id, request));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<MarcaResponseDTO> patchMarca(@PathVariable Integer id,
+                                                       @RequestBody MarcaPatchDTO patchDTO) throws Exception {
+        return ResponseEntity.ok(marcaService.patchMarca(id, patchDTO));
     }
 
     @DeleteMapping("/{id}")

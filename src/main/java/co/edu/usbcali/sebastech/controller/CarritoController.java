@@ -2,6 +2,7 @@ package co.edu.usbcali.sebastech.controller;
 
 import co.edu.usbcali.sebastech.dto.CarritoRequestDTO;
 import co.edu.usbcali.sebastech.dto.CarritoResponseDTO;
+import co.edu.usbcali.sebastech.dto.CarritoPatchDTO;
 import co.edu.usbcali.sebastech.service.CarritoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,12 @@ public class CarritoController {
     @PostMapping
     public ResponseEntity<CarritoResponseDTO> saveItem(@RequestBody CarritoRequestDTO request) throws Exception {
         return new ResponseEntity<>(carritoService.saveItem(request), HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CarritoResponseDTO> patchCarrito(@PathVariable Integer id,
+                                                           @RequestBody CarritoPatchDTO patchDTO) throws Exception {
+        return ResponseEntity.ok(carritoService.patchCarrito(id, patchDTO));
     }
 
     @DeleteMapping("/{id}")

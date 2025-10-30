@@ -2,6 +2,7 @@ package co.edu.usbcali.sebastech.controller;
 
 import co.edu.usbcali.sebastech.dto.PedidoRequestDTO;
 import co.edu.usbcali.sebastech.dto.PedidoResponseDTO;
+import co.edu.usbcali.sebastech.dto.PedidoPatchDTO;
 import co.edu.usbcali.sebastech.service.PedidoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,12 @@ public class PedidoController {
     @GetMapping("/{id}")
     public ResponseEntity<PedidoResponseDTO> findById(@PathVariable Integer id) throws Exception {
         return ResponseEntity.ok(pedidoService.findById(id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<PedidoResponseDTO> patchPedido(@PathVariable Integer id,
+                                                         @RequestBody PedidoPatchDTO patchDTO) throws Exception {
+        return ResponseEntity.ok(pedidoService.patchPedido(id, patchDTO));
     }
 
     @DeleteMapping("/{id}")

@@ -2,6 +2,7 @@ package co.edu.usbcali.sebastech.controller;
 
 import co.edu.usbcali.sebastech.dto.CategoriaRequestDTO;
 import co.edu.usbcali.sebastech.dto.CategoriaResponseDTO;
+import co.edu.usbcali.sebastech.dto.CategoriaPatchDTO;
 import co.edu.usbcali.sebastech.service.CategoriaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,12 @@ public class CategoriaController {
     public ResponseEntity<CategoriaResponseDTO> updateCategoria(@PathVariable Integer id,
                                                                 @RequestBody CategoriaRequestDTO categoriaRequestDTO) throws Exception {
         return ResponseEntity.ok(categoriaService.updateCategoria(id, categoriaRequestDTO));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CategoriaResponseDTO> patchCategoria(@PathVariable Integer id,
+                                                               @RequestBody CategoriaPatchDTO patchDTO) throws Exception {
+        return ResponseEntity.ok(categoriaService.patchCategoria(id, patchDTO));
     }
 
     @DeleteMapping("/{id}")

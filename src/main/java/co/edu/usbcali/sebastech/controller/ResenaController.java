@@ -2,6 +2,7 @@ package co.edu.usbcali.sebastech.controller;
 
 import co.edu.usbcali.sebastech.dto.ResenaRequestDTO;
 import co.edu.usbcali.sebastech.dto.ResenaResponseDTO;
+import co.edu.usbcali.sebastech.dto.ResenaPatchDTO;
 import co.edu.usbcali.sebastech.service.ResenaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,5 +32,10 @@ public class ResenaController {
     public ResponseEntity<co.edu.usbcali.sebastech.dto.MessageResponse> deleteResena(@PathVariable Integer id) throws Exception {
         resenaService.deleteResena(id);
         return ResponseEntity.ok(new co.edu.usbcali.sebastech.dto.MessageResponse("Reseña eliminada correctamente"));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResenaResponseDTO> patchResena(@PathVariable Integer id, @RequestBody ResenaPatchDTO patchDTO) throws Exception {
+        return ResponseEntity.ok(resenaService.patchResena(id, patchDTO));
     }
 }

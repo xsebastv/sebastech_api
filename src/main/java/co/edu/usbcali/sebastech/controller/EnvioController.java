@@ -2,6 +2,7 @@ package co.edu.usbcali.sebastech.controller;
 
 import co.edu.usbcali.sebastech.dto.EnvioRequestDTO;
 import co.edu.usbcali.sebastech.dto.EnvioResponseDTO;
+import co.edu.usbcali.sebastech.dto.EnvioPatchDTO;
 import co.edu.usbcali.sebastech.service.EnvioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,5 +32,10 @@ public class EnvioController {
     public ResponseEntity<co.edu.usbcali.sebastech.dto.MessageResponse> deleteEnvio(@PathVariable Integer id) throws Exception {
         envioService.deleteEnvio(id);
         return ResponseEntity.ok(new co.edu.usbcali.sebastech.dto.MessageResponse("Envío eliminado correctamente"));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<EnvioResponseDTO> patchEnvio(@PathVariable Integer id, @RequestBody EnvioPatchDTO patchDTO) throws Exception {
+        return ResponseEntity.ok(envioService.patchEnvio(id, patchDTO));
     }
 }

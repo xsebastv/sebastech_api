@@ -3,6 +3,7 @@ package co.edu.usbcali.sebastech.service;
 import co.edu.usbcali.sebastech.domain.Marca;
 import co.edu.usbcali.sebastech.dto.MarcaRequestDTO;
 import co.edu.usbcali.sebastech.dto.MarcaResponseDTO;
+import co.edu.usbcali.sebastech.dto.MarcaPatchDTO;
 import co.edu.usbcali.sebastech.exception.BadRequestException;
 import co.edu.usbcali.sebastech.exception.NotFoundException;
 import co.edu.usbcali.sebastech.mapper.MarcaMapper;
@@ -61,6 +62,26 @@ public class MarcaServiceImpl implements MarcaService {
         if (request == null) throw new BadRequestException("Datos inválidos");
         if (request.getNombre() != null && !request.getNombre().isBlank()) marca.setNombre(request.getNombre());
         if (request.getPaisOrigen() != null) marca.setPaisOrigen(request.getPaisOrigen());
+        marca = marcaRepository.save(marca);
+        return MarcaMapper.entityToDto(marca);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public MarcaResponseDTO patchMarca(Integer id, MarcaPatchDTO patchDTO) throws Exception {
+        Marca marca = marcaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Marca no encontrada"));
+        
+        if (patchDTO == null) throw new BadRequestException("Datos inválidos");
+        
+        // Solo actualizar campos que no sean null
+        if (patchDTO.getNombre() != null && !patchDTO.getNombre().isBlank()) {
+            marca.setNombre(patchDTO.getNombre());
+        }
+        if (patchDTO.getPaisOrigen() != null) {
+            marca.setPaisOrigen(patchDTO.getPaisOrigen());
+        }
+        
         marca = marcaRepository.save(marca);
         return MarcaMapper.entityToDto(marca);
     }

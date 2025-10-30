@@ -2,6 +2,7 @@ package co.edu.usbcali.sebastech.controller;
 
 import co.edu.usbcali.sebastech.dto.ProductoRequestDTO;
 import co.edu.usbcali.sebastech.dto.ProductoResponseDTO;
+import co.edu.usbcali.sebastech.dto.ProductoPatchDTO;
 import co.edu.usbcali.sebastech.service.ProductoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,12 @@ public class ProductoController {
     public ResponseEntity<ProductoResponseDTO> updateProducto(@PathVariable Integer id,
                                                               @RequestBody ProductoRequestDTO request) throws Exception {
         return ResponseEntity.ok(productoService.updateProducto(id, request));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductoResponseDTO> patchProducto(@PathVariable Integer id,
+                                                             @RequestBody ProductoPatchDTO patchDTO) throws Exception {
+        return ResponseEntity.ok(productoService.patchProducto(id, patchDTO));
     }
 
     @DeleteMapping("/{id}")

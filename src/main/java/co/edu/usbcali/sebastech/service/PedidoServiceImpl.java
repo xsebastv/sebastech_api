@@ -4,6 +4,7 @@ import co.edu.usbcali.sebastech.domain.Pedido;
 import co.edu.usbcali.sebastech.domain.Usuario;
 import co.edu.usbcali.sebastech.dto.PedidoRequestDTO;
 import co.edu.usbcali.sebastech.dto.PedidoResponseDTO;
+import co.edu.usbcali.sebastech.dto.PedidoPatchDTO;
 import co.edu.usbcali.sebastech.exception.BadRequestException;
 import co.edu.usbcali.sebastech.exception.NotFoundException;
 import co.edu.usbcali.sebastech.mapper.PedidoMapper;
@@ -12,6 +13,7 @@ import co.edu.usbcali.sebastech.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.util.List;
 
@@ -44,6 +46,31 @@ public class PedidoServiceImpl implements PedidoService {
     @Transactional(readOnly = true)
     public PedidoResponseDTO findById(Integer id) throws Exception {
         Pedido pedido = pedidoRepository.findById(id).orElseThrow(() -> new NotFoundException("Pedido no encontrado"));
+        return PedidoMapper.entityToDto(pedido);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public PedidoResponseDTO patchPedido(Integer id, PedidoPatchDTO patchDTO) throws Exception {
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Pedido no encontrado"));
+        
+        if (patchDTO == null) throw new BadRequestException("Datos inválidos");
+        
+        // Solo actualizar campos que no sean null
+        if (patchDTO.getUsuarioId() != null) {
+            Usuario usuario = usuarioRepository.findById(patchDTO.getUsuarioId())
+                    .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+            pedido.setUsuario(usuario);
+        }
+        if (patchDTO.getEstado() != null && !patchDTO.getEstado().isBlank()) {
+            pedido.setEstado(patchDTO.getEstado());
+        }
+        if (patchDTO.getTotal() != null) {
+            pedido.setTotal(patchDTO.getTotal());
+        }
+        
+        pedido = pedidoRepository.save(pedido);
         return PedidoMapper.entityToDto(pedido);
     }
 

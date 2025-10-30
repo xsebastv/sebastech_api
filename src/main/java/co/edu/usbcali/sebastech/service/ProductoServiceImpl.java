@@ -5,6 +5,7 @@ import co.edu.usbcali.sebastech.domain.Marca;
 import co.edu.usbcali.sebastech.domain.Producto;
 import co.edu.usbcali.sebastech.dto.ProductoRequestDTO;
 import co.edu.usbcali.sebastech.dto.ProductoResponseDTO;
+import co.edu.usbcali.sebastech.dto.ProductoPatchDTO;
 import co.edu.usbcali.sebastech.exception.BadRequestException;
 import co.edu.usbcali.sebastech.exception.NotFoundException;
 import co.edu.usbcali.sebastech.mapper.ProductoMapper;
@@ -97,6 +98,51 @@ public class ProductoServiceImpl implements ProductoService {
             producto.setMarca(marca);
         }
 
+        producto = productoRepository.save(producto);
+        return ProductoMapper.entityToDto(producto);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ProductoResponseDTO patchProducto(Integer id, ProductoPatchDTO patchDTO) throws Exception {
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
+        
+        if (patchDTO == null) throw new BadRequestException("Datos inválidos");
+        
+        // Solo actualizar campos que no sean null
+        if (patchDTO.getNombre() != null && !patchDTO.getNombre().isBlank()) {
+            producto.setNombre(patchDTO.getNombre());
+        }
+        if (patchDTO.getDescripcion() != null) {
+            producto.setDescripcion(patchDTO.getDescripcion());
+        }
+        if (patchDTO.getPrecio() != null) {
+            producto.setPrecio(patchDTO.getPrecio());
+        }
+        if (patchDTO.getStock() != null) {
+            producto.setStock(patchDTO.getStock());
+        }
+        if (patchDTO.getImagenUrl() != null) {
+            producto.setImagenUrl(patchDTO.getImagenUrl());
+        }
+        if (patchDTO.getEspecificaciones() != null) {
+            producto.setEspecificaciones(patchDTO.getEspecificaciones());
+        }
+        if (patchDTO.getTipoProducto() != null) {
+            producto.setTipoProducto(patchDTO.getTipoProducto());
+        }
+        if (patchDTO.getCategoriaId() != null) {
+            Categoria categoria = categoriaRepository.findById(patchDTO.getCategoriaId())
+                    .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
+            producto.setCategoria(categoria);
+        }
+        if (patchDTO.getMarcaId() != null) {
+            Marca marca = marcaRepository.findById(patchDTO.getMarcaId())
+                    .orElseThrow(() -> new NotFoundException("Marca no encontrada"));
+            producto.setMarca(marca);
+        }
+        
         producto = productoRepository.save(producto);
         return ProductoMapper.entityToDto(producto);
     }
